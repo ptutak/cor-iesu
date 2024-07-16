@@ -1,5 +1,6 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -24,7 +25,7 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
             root_path = ROOT_CONFIG_PATH / "config" / "dev-config.ini"
         else:
             root_path = ROOT_CONFIG_PATH / "config" / "prod-config.ini"
-    
+
     app.config[ConfigKeys.CONFIG_FILE] = root_path
 
     load_config(app)
