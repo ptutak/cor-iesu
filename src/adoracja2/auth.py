@@ -14,7 +14,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import models
 from .app import database as db
-from .const import DEFAULT_CONFIG, DefaultConfigKeys
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 

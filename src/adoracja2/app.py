@@ -1,19 +1,18 @@
-import os.path
 from pathlib import Path
 
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from .config import load_config
-from .const import ConfigKeys
+from adoracja2.config import load_config
+from adoracja2.const import ConfigKeys
 
 database = SQLAlchemy()
 
 ROOT_CONFIG_PATH = Path(__file__).parent
 
 
-def create_app(root_path: Path = ROOT_CONFIG_PATH):
+def create_app(root_path: Path = ROOT_CONFIG_PATH) -> Flask:
     app = Flask(__name__)
     app.config[ConfigKeys.ROOT_PATH] = root_path
 
