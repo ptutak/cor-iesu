@@ -31,6 +31,8 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     load_config(app)
     database.init_app(app)
 
+    import cor_iesu.models
+
     migrate = Migrate()
     migrate.init_app(app, database)
 
