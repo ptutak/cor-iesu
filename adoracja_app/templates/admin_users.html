@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block header %}
+<h4>Użytkownicy</h4>
+{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th class="w-50">Administratorzy</th>
+            <th class="w-50">Użytkownicy</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <table class="table">
+                    <tbody>
+                        {% for admin in g.admins %}
+                        <tr>
+                            <td class="w-50">{{ admin.first_name }} {{ admin.last_name }}, {{ admin.phone_number }}</td>
+                            <td class="w-50">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <div class="float-right">
+                                            <form method="post">
+                                                {% if g.user.id == admin.id %}
+                                                <input type="checkbox" class="form-check-input" id="form_check_no_admin_{{ admin.id }}" disabled>
+                                                {% else %}
+                                                <input type="checkbox" class="form-check-input" id="form_check_no_admin_{{ admin.id }}" required>
+                                                {% endif %}
+                                                <label class="form-check-label" for="form_check_no_admin_{{ admin.id }}">Potwierdź</label>
+                                                <input type="hidden" name="user-id-no-admin" value="{{ admin.id }}">
+                                                {% if g.user.id == admin.id %}
+                                                <input class="btn btn-warning" type="submit" value="Usuń z Admin" disabled>
+                                                {% else %}
+                                                <input class="btn btn-warning" type="submit" value="Usuń z Admin">
+                                                {% endif %}
+                                            </form>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table class="table">
+                    <tbody>
+                        {% for user in g.users %}
+                        <tr>
+                            <td class="w-50">{{ user.first_name }} {{ user.last_name }}, {{ user.phone_number }}</td>
+                            <td class="w-50">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <div class="float-right">
+                                            <form method="post">
+                                                <input type="checkbox" class="form-check-input" id="form_check_delete_{{ user.id }}" required>
+                                                <label class="form-check-label" for="form_check_delete_{{ user.id }}">Potwierdź</label>
+                                                <input type="hidden" name="user-id-delete" value="{{ user.id }}">
+                                                <input class="btn btn-danger" type="submit" value="Usuń">
+                                            </form>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="float-right">
+                                            <form method="post">
+                                                <input type="checkbox" class="form-check-input" id="form_check_admin_{{ user.id }}" required>
+                                                <label class="form-check-label" for="form_check_admin_{{ user.id }}">Potwierdź</label>
+                                                <input type="hidden" name="user-id-admin" value="{{ user.id }}">
+                                                <input class="btn btn-success" type="submit" value="Promuj na Admin">
+                                            </form>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

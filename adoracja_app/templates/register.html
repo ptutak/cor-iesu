@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block header %}
+<h1>
+    Rejestracja
+</h1>
+{% endblock %}
+{% block content %}
+<form method="post">
+    <div class="form-group">
+        <label for="username">Nazwa użytkownika</label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Wpisz nazwę użytkownika" pattern="[a-zA-Z0-9_]{3,60}" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Hasło</label>
+        <fieldset>
+            <input type="password" class="form-control" id="password" name="password" minlength="6" placeholder="Wpisz hasło" required>
+            <br/><input type="password" class="form-control" id="confirm_password" name="confirm_password" minlength="6" placeholder="Potwierdź hasło" required>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <label for="phone-number">Numer telefonu</label>
+        <input type="tel" class="form-control" id="phone-number" name="phone-number" placeholder="123456789" pattern="[0-9]{9}" required>
+    </div>
+    <div class="form-group">
+        <label for="first-name">Imie</label>
+        <input type="text" class="form-control" id="first-name" name="first-name" placeholder="Wpisz imie" required>
+    </div>
+    <div class="form-group">
+        <label for="last-name">Nazwisko</label>
+        <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Wpisz nazwisko" required>
+    </div>
+    <input type="submit" class="btn btn-primary mt-3" value="Rejestruj">
+</form>
+{% endblock %}

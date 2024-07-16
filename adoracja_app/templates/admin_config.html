@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block header %}
+<h4>Konfiguracja</h4>
+{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th class="w-25">Nazwa opcji:</th>
+            <th>Wartość:</th>
+            <th>Zatwierdź</th>
+            <th class="w-50">Opis</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in g.config.items() %}
+        <tr>
+            <form method="post">
+            <td>{{ key }}</td>
+            <td>
+                <input type="hidden" name="config-value-name" value="{{ key }}" required>
+                <input class="form-control" name="config-value-value" value="{{ value }}" pattern=".+" required>
+            </td>
+            <td>
+                <input class="btn btn-success" type="submit" value="Zatwierdź">
+            </td>
+            <td>{{ g.config_description[key] }}</td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

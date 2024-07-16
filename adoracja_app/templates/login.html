@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block header %}
+<h1>
+    Logowanie
+</h1>
+{% endblock %}
+{% block content %}
+<form method="post">
+    <div class="form-group">
+        <label for="username">Nazwa użytkownika</label>
+        <input type="username" class="form-control" id="username" name="username" placeholder="username" pattern="[a-zA-Z0-9_]{3,60}" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Hasło</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Hasło" minlength="6" required>
+    </div>
+    <input type="submit" class="btn btn-primary mt-3" value="Zaloguj">
+</form>
+{% endblock %}
