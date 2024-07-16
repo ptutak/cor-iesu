@@ -1,4 +1,4 @@
-from adoracja_app.app import database as db
+from adoracja2.app import database as db
 
 
 class User(db.Model):

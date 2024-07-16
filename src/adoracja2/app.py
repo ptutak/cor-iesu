@@ -4,8 +4,8 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from adoracja2.config import load_config
-from adoracja2.const import ConfigKeys
+from .config import load_config
+from .const import ConfigKeys
 
 database = SQLAlchemy()
 
@@ -15,6 +15,9 @@ ROOT_CONFIG_PATH = Path(__file__).parent
 def create_app(root_path: Path = ROOT_CONFIG_PATH) -> Flask:
     app = Flask(__name__)
     app.config[ConfigKeys.ROOT_PATH] = root_path
+
+    if ConfigKeys.ENV not in app.config:
+        app.config[ConfigKeys.ENV] = "development"
 
     if app.config[ConfigKeys.ENV] == "development":
         app.config[ConfigKeys.CONFIG_FILE] = root_path / "config" / "dev-config.ini"
