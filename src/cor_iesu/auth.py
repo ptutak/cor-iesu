@@ -12,8 +12,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from . import models
-from .app import database as db
+from .models import User, db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -42,7 +41,7 @@ def register():
     elif not password:
         error = "Haslo jest wymagane"
 
-    user: models.User | None = models.User.query.filter_by(username=username).first()
+    user: User | None = User.query.filter_by(username=username).first()
 
     if user is not None:
         error = "Dana osoba jest juz zarejestrowana"
@@ -51,7 +50,7 @@ def register():
         flash(error)
 
     session.clear()
-    new_user = models.User(
+    new_user = User(
         first_name=first_name,
         last_name=last_name,
         phone_number=phone_number,
@@ -71,7 +70,7 @@ def login():
     password = request.form["password"]
     error: str | None = None
 
-    user: models.User | None = models.User.query.filter_by(
+    user: User | None = User.query.filter_by(
         username=username,
     ).first()
 
@@ -101,7 +100,7 @@ def load_logged_in_user():
         g.user = None
         g.admin = False
     else:
-        g.user = models.User.query.filter_by(id=user_id).first()
+        g.user = User.query.filter_by(id=user_id).first()
         if g.user and g.user.admin:
             g.admin = True
         else:

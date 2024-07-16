@@ -3,19 +3,18 @@ from pathlib import Path
 
 from flask import Flask
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
+
 
 from .config import load_config
 from .const import ConfigKeys
 
-database = SQLAlchemy()
 
 ROOT_CONFIG_PATH = Path(__file__).parent
 
 
 def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     app = Flask(__name__)
-    app.config[ConfigKeys.ROOT_PATH] = root_path
+    app.config[ConfigKeys.ROOT_PATH] = ROOT_CONFIG_PATH
 
     if ConfigKeys.ENV not in app.config:
         app.config[ConfigKeys.ENV] = "development"
@@ -29,16 +28,23 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     app.config[ConfigKeys.CONFIG_FILE] = root_path
 
     load_config(app)
-    database.init_app(app)
 
     import cor_iesu.models
+
+    database = cor_iesu.models.db
+    database.init_app(app)
 
     migrate = Migrate()
     migrate.init_app(app, database)
 
-    # app.register_blueprint(adoracja.auth.bp)
+    import cor_iesu.auth
+    app.register_blueprint(cor_iesu.auth.bp)
     # app.register_blueprint(adoracja.routes.root)
     # app.register_blueprint(adoracja.views.api)
     # app.register_blueprint(adoracja.commands.cli)
+
+    with app.app_context():
+        print(app.config[ConfigKeys.SQLALCHEMY_DATABASE_URI])
+        database.create_all()
 
     return app

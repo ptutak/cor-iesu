@@ -1,4 +1,6 @@
-from cor_iesu.app import database as db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 class User(db.Model):
