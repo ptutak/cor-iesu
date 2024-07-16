@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import os
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -12,17 +12,20 @@ database = SQLAlchemy()
 ROOT_CONFIG_PATH = Path(__file__).parent
 
 
-def create_app(root_path: Path = ROOT_CONFIG_PATH) -> Flask:
+def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     app = Flask(__name__)
     app.config[ConfigKeys.ROOT_PATH] = root_path
 
     if ConfigKeys.ENV not in app.config:
         app.config[ConfigKeys.ENV] = "development"
 
-    if app.config[ConfigKeys.ENV] == "development":
-        app.config[ConfigKeys.CONFIG_FILE] = root_path / "config" / "dev-config.ini"
-    else:
-        app.config[ConfigKeys.CONFIG_FILE] = root_path / "config" / "prod-config.ini"
+    if root_path is None:
+        if app.config[ConfigKeys.ENV] == "development":
+            root_path = ROOT_CONFIG_PATH / "config" / "dev-config.ini"
+        else:
+            root_path = ROOT_CONFIG_PATH / "config" / "prod-config.ini"
+    
+    app.config[ConfigKeys.CONFIG_FILE] = root_path
 
     load_config(app)
     database.init_app(app)

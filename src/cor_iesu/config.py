@@ -14,28 +14,28 @@ class InvalidConfig(Exception):
 
 
 def load_config(app: Flask):
-    config_file = app.config[ConfigKeys.CONFIG_FILE]
+    config_file: str = app.config[ConfigKeys.CONFIG_FILE]
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    VALID_KEYS = {
+    valid_keys = {
         "app": {"secret_key"},
         "database": {"username", "password", "name", "address"},
         "database-dev": {"path"},
     }
 
-    MANDATORY_SECTIONS = {"app", "database"}
+    mandatory_sections = {"app", "database"}
 
     config_keys = set(config.keys())
-    if not MANDATORY_SECTIONS <= config_keys:
-        missing_sections = MANDATORY_SECTIONS - config_keys
+    if not mandatory_sections <= config_keys:
+        missing_sections = mandatory_sections - config_keys
         raise InvalidConfig(f"Mandatory sections missing: {missing_sections}")
 
     for key in config_keys:
-        if key not in VALID_KEYS:
+        if key not in valid_keys:
             continue
         config_values = set(config[key].keys())
-        valid_values = VALID_KEYS[key]
+        valid_values = valid_keys[key]
         if valid_values != config_values:
             raise InvalidConfig(f"Valid config values for section: {key}, are: {valid_values}")
 
