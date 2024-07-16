@@ -1,1 +1,1 @@
-from adoracja2.app import create_app
+from cor_iesu.app import create_app

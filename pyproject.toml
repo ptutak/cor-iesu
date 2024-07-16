@@ -3,8 +3,8 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "adoracja2"
-description = "Adoracja 2"
+name = "cor-iesu"
+description = "Cor Iesu - a simple web application for managing prayer intentions."
 authors = [
     {name = "Piotr Tutak", email = "p.tutak@outlook.com"},
 ]
