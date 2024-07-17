@@ -38,13 +38,14 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     migrate.init_app(app, database)
 
     import cor_iesu.auth
+    import cor_iesu.routes
+    import cor_iesu.views
+
     app.register_blueprint(cor_iesu.auth.bp)
-    # app.register_blueprint(adoracja.routes.root)
-    # app.register_blueprint(adoracja.views.api)
-    # app.register_blueprint(adoracja.commands.cli)
+    app.register_blueprint(cor_iesu.routes.root)
+    app.register_blueprint(cor_iesu.views.api)
 
     with app.app_context():
-        print(app.config[ConfigKeys.SQLALCHEMY_DATABASE_URI])
         database.create_all()
 
     return app

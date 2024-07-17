@@ -1,29 +1,30 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy import String, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 db = SQLAlchemy()
 
 
 class User(db.Model):
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-    phone_number = db.Column(db.String(9), unique=True, nullable=False)
-    first_name = db.Column(db.String(80), nullable=False)
-    last_name = db.Column(db.String(80), nullable=False)
-    admin = db.relationship("Admin", back_populates="user")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    phone_number: Mapped[str] = mapped_column(db.String(9), unique=True, nullable=False)
+    first_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    admin: Mapped["Admin"] = relationship(back_populates="user")
 
 
 class Admin(db.Model):
     __tablename__ = "admin"
-    id = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey("user.id"))
-    user = db.relationship("User", back_populates="admin")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    id_user: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="admin")
 
 
 class Config(db.Model):
     __tablename__ = "config"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    value = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(600), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    value: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(String(600), nullable=False)
