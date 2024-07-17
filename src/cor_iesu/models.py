@@ -54,6 +54,7 @@ class Collection(db.Model):
     config: Mapped["CollectionConfig"] = relationship(back_populates="collections", uselist=False)
     periods: Mapped[list["PeriodCollection"]] = relationship(back_populates="collections")
 
+
 class PeriodCollection(db.Model):
     __tablename__ = "period_collections"
 
