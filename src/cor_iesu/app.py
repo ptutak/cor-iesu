@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 from flask import Flask
-from flask_migrate import Migrate
 
 from .config import load_config
 from .const import ConfigKeys

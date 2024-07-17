@@ -9,6 +9,7 @@ migrate = Migrate()
 
 class User(db.Model):
     __tablename__ = "user"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -20,6 +21,7 @@ class User(db.Model):
 
 class Admin(db.Model):
     __tablename__ = "admin"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     id_user: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="admin")
@@ -27,6 +29,7 @@ class Admin(db.Model):
 
 class Config(db.Model):
     __tablename__ = "config"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     value: Mapped[str] = mapped_column(String(255), nullable=False)
