@@ -34,8 +34,7 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     database = cor_iesu.models.db
     database.init_app(app)
 
-    migrate = Migrate()
-    migrate.init_app(app, database)
+    Migrate(app, database)
 
     import cor_iesu.auth
     import cor_iesu.routes
@@ -44,8 +43,5 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     app.register_blueprint(cor_iesu.auth.bp)
     app.register_blueprint(cor_iesu.routes.root)
     app.register_blueprint(cor_iesu.views.api)
-
-    with app.app_context():
-        database.create_all()
 
     return app
