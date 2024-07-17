@@ -1,12 +1,11 @@
-from cor_iesu.auth import login_required
-from cor_iesu.models import db
 from flask import Blueprint, abort, g, render_template, request
 from sqlalchemy import func
 
+from cor_iesu.auth import login_required
+from cor_iesu.models import db
+
 from . import models
-from .const import (
-    ConfigKeys,
-)
+from .const import ConfigKeys
 
 api = Blueprint("views", __name__)
 
