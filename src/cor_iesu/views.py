@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+
 from cor_iesu.auth import login_required
 
 api = Blueprint("views", __name__)
