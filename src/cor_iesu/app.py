@@ -32,9 +32,9 @@ def create_app(root_path: os.PathLike[str] | None = None) -> Flask:
     import cor_iesu.models
 
     database = cor_iesu.models.db
+    migrate = cor_iesu.models.migrate
     database.init_app(app)
-
-    Migrate(app, database)
+    migrate.init_app(app, database)
 
     import cor_iesu.auth
     import cor_iesu.routes
