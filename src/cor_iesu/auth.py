@@ -70,9 +70,7 @@ def login():
     password = request.form["password"]
     error: str | None = None
 
-    user: User | None = User.query.filter_by(
-        username=username,
-    ).first()
+    user: User | None = User.query.filter_by(username=username).first()
 
     if user is None:
         error = "Podana osoba nie jest zarejestrowana"

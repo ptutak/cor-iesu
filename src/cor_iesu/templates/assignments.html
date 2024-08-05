@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block header %}
+<h4>Zapisy</h4>
+{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Terminy adoracji Najświętszego Sakramentu:</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Dzień tygodnia</th>
+                            <th>Godzina</th>
+                            <th>Usuń</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for hour in g.user_assignments %}
+                        <tr>
+                            <td>
+                                {% if hour.weekday == 1 %}
+                                Poniedziałek
+                                {% elif hour.weekday == 2 %}
+                                Wtorek
+                                {% elif hour.weekday == 3 %}
+                                Środa
+                                {% elif hour.weekday == 4 %}
+                                Czwartek
+                                {% elif hour.weekday == 5 %}
+                                Piątek
+                                {% elif hour.weekday == 6 %}
+                                Sobota
+                                {% elif hour.weekday == 7 %}
+                                Niedziela
+                                {% endif %}
+                            </td>
+                            <td>{{ hour.hour }}:00</td>
+                            <td style="width: 15%;">
+                                <form method="post">
+                                    <input type="hidden" name="hour-delete-id" value="{{ hour.id }}">
+                                    <input type="submit" class="btn btn-danger" value="Usuń">
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="hour-select">Wybierz godzinę adoracji</label>
+                        <select class="form-control" id="hour-select" name="hour-select">
+                            {% for hour in g.empty_hours %}
+                            <option value="{{ hour.id }}">
+                                {% if hour.weekday == 1 %}
+                                Poniedziałek, {{ hour.hour }}:00
+                                {% elif hour.weekday == 2 %}
+                                Wtorek, {{ hour.hour }}:00
+                                {% elif hour.weekday == 3 %}
+                                Środa, {{ hour.hour }}:00
+                                {% elif hour.weekday == 4 %}
+                                Czwartek, {{ hour.hour }}:00
+                                {% elif hour.weekday == 5 %}
+                                Piątek, {{ hour.hour }}:00
+                                {% elif hour.weekday == 6 %}
+                                Sobota, {{ hour.hour }}:00
+                                {% elif hour.weekday == 7 %}
+                                Niedziela, {{ hour.hour }}:00
+                                {% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="submit" class="btn btn-primary mt-3" value="Zapisz się">
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

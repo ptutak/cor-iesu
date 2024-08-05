@@ -9,3 +9,8 @@ api = Blueprint("views", __name__)
 @login_required
 def user():
     return render_template("user.html")
+
+
+@api.route("/assignments", methods=("GET", "POST"))
+def assignments():
+    return render_template("assignments.html")

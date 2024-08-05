@@ -27,3 +27,7 @@ init-migrations:
 migrations:
 	@flask --app 'cor_iesu.app:create_app("./config/dev-config.ini")' db migrate -m "Migration at $(date)"
 	@flask --app 'cor_iesu.app:create_app("./config/dev-config.ini")' db upgrade
+
+.PHONY: run-dev
+run-dev:
+	@flask --app 'cor_iesu.app:create_app("./config/dev-config.ini")' run
