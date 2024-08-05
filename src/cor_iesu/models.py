@@ -17,7 +17,7 @@ class User(db.Model):
     first_name: Mapped[str] = mapped_column(String(80), nullable=False)
     last_name: Mapped[str] = mapped_column(String(80), nullable=False)
     email: Mapped[str] = mapped_column(String(80), nullable=False)
-    admin: Mapped["Admin"] = relationship(back_populates="users")
+    admin: Mapped["Admin"] = relationship(back_populates="user")
 
 
 class Admin(db.Model):
@@ -25,7 +25,7 @@ class Admin(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     id_user: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    user: Mapped["User"] = relationship(back_populates="admins")
+    user: Mapped["User"] = relationship(back_populates="admin")
 
 
 class Config(db.Model):
@@ -51,8 +51,8 @@ class Collection(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     description: Mapped[str] = mapped_column(String(600), nullable=False)
-    config: Mapped["CollectionConfig"] = relationship(back_populates="collections", uselist=False)
-    periods: Mapped[list["PeriodCollection"]] = relationship(back_populates="collections")
+    config: Mapped["CollectionConfig"] = relationship(back_populates="collection", uselist=False)
+    periods: Mapped[list["PeriodCollection"]] = relationship(back_populates="period")
 
 
 class PeriodCollection(db.Model):
@@ -61,9 +61,9 @@ class PeriodCollection(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     id_period: Mapped[int] = mapped_column(ForeignKey("periods.id"))
     id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))
-    collection: Mapped["Collection"] = relationship(back_populates="period_collections")
-    period: Mapped["Period"] = relationship(back_populates="period_collections")
-    assignment: Mapped["PeriodAssignment"] = relationship(back_populates="period_collections")
+    collection: Mapped["Collection"] = relationship(back_populates="periods")
+    period: Mapped["Period"] = relationship()
+    assignment: Mapped["PeriodAssignment"] = relationship(back_populates="period_collection")
 
 
 class CollectionConfig(db.Model):
@@ -71,7 +71,7 @@ class CollectionConfig(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))
-    collection: Mapped["Collection"] = relationship(back_populates="configs")
+    collection: Mapped["Collection"] = relationship(back_populates="collection_configs")
     config: Mapped["Config"] = relationship(back_populates="collections")
 
 
@@ -83,4 +83,4 @@ class PeriodAssignment(db.Model):
     attendant_name: Mapped[str] = mapped_column(String(100), nullable=False)
     attendant_email: Mapped[str] = mapped_column(String(80))
     attendant_phone_number: Mapped[str] = mapped_column(String(15))
-    period_collection: Mapped["PeriodCollection"] = relationship(back_populates="period_assignments")
+    period_collection: Mapped["PeriodCollection"] = relationship(back_populates="assignment")

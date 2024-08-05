@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect, url_for
 
 from cor_iesu.auth import login_required
 
@@ -13,4 +13,13 @@ def user():
 
 @api.route("/assignments", methods=("GET", "POST"))
 def assignments():
-    return render_template("assignments.html")
+    if request.method == "GET":
+        return render_template("assignments.html")
+
+    username = request.form["username"]
+    password = request.form["password"]
+    first_name = request.form["first-name"]
+    last_name = request.form["last-name"]
+    phone_number = request.form["phone-number"]
+
+    return redirect(url_for("views.assignments"))
