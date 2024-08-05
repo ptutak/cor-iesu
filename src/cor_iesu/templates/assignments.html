@@ -12,73 +12,32 @@
     <tbody>
         <tr>
             <td>
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Dzień tygodnia</th>
-                            <th>Godzina</th>
-                            <th>Usuń</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for hour in g.user_assignments %}
-                        <tr>
-                            <td>
-                                {% if hour.weekday == 1 %}
-                                Poniedziałek
-                                {% elif hour.weekday == 2 %}
-                                Wtorek
-                                {% elif hour.weekday == 3 %}
-                                Środa
-                                {% elif hour.weekday == 4 %}
-                                Czwartek
-                                {% elif hour.weekday == 5 %}
-                                Piątek
-                                {% elif hour.weekday == 6 %}
-                                Sobota
-                                {% elif hour.weekday == 7 %}
-                                Niedziela
-                                {% endif %}
-                            </td>
-                            <td>{{ hour.hour }}:00</td>
-                            <td style="width: 15%;">
-                                <form method="post">
-                                    <input type="hidden" name="hour-delete-id" value="{{ hour.id }}">
-                                    <input type="submit" class="btn btn-danger" value="Usuń">
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
                 <form method="post">
                     <div class="form-group">
-                        <label for="hour-select">Wybierz godzinę adoracji</label>
-                        <select class="form-control" id="hour-select" name="hour-select">
-                            {% for hour in g.empty_hours %}
-                            <option value="{{ hour.id }}">
-                                {% if hour.weekday == 1 %}
-                                Poniedziałek, {{ hour.hour }}:00
-                                {% elif hour.weekday == 2 %}
-                                Wtorek, {{ hour.hour }}:00
-                                {% elif hour.weekday == 3 %}
-                                Środa, {{ hour.hour }}:00
-                                {% elif hour.weekday == 4 %}
-                                Czwartek, {{ hour.hour }}:00
-                                {% elif hour.weekday == 5 %}
-                                Piątek, {{ hour.hour }}:00
-                                {% elif hour.weekday == 6 %}
-                                Sobota, {{ hour.hour }}:00
-                                {% elif hour.weekday == 7 %}
-                                Niedziela, {{ hour.hour }}:00
-                                {% endif %}
+                        <label for="period-select">Wybierz godzinę adoracji</label>
+                        <select class="form-control" id="period-select" name="period-select">
+                            {% for period in g.empty_assignments %}
+                            <option value="{{ period.id }}">
+                                {{ period.name }}
                             </option>
                             {% endfor %}
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="first-name">Imie</label>
+                        <input type="text" class="form-control" id="first-name" name="first-name" placeholder="Wpisz imie" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Nazwisko</label>
+                        <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Wpisz nazwisko" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone-number">Numer telefonu</label>
+                        <input type="tel" class="form-control" id="phone-number" name="phone-number" placeholder="123456789" pattern="[0-9+]{,15}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="my@email.com">
                     </div>
                     <input type="submit" class="btn btn-primary mt-3" value="Zapisz się">
                 </form>
