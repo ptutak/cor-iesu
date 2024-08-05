@@ -13,11 +13,11 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(100), nullable=False)
-    phone_number: Mapped[str] = mapped_column(db.String(9), unique=True, nullable=False)
+    phone_number: Mapped[str] = mapped_column(String(12), unique=True, nullable=False)
     first_name: Mapped[str] = mapped_column(String(80), nullable=False)
     last_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    email: Mapped[str] = mapped_column(String(80), nullable=False)
     admin: Mapped["Admin"] = relationship(back_populates="users")
-    period_assignments: Mapped[list["PeriodAssignment"]] = relationship(back_populates="users")
 
 
 class Admin(db.Model):
@@ -63,6 +63,7 @@ class PeriodCollection(db.Model):
     id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))
     collection: Mapped["Collection"] = relationship(back_populates="period_collections")
     period: Mapped["Period"] = relationship(back_populates="period_collections")
+    assignment: Mapped["PeriodAssignment"] = relationship(back_populates="period_collections")
 
 
 class CollectionConfig(db.Model):
@@ -77,7 +78,9 @@ class CollectionConfig(db.Model):
 class PeriodAssignment(db.Model):
     __tablename__ = "period_assignments"
 
-    id_period_collection: Mapped[int] = mapped_column(ForeignKey("period_collections.id"), primary_key=True)
-    id_user: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    id_period_collection: Mapped[int] = mapped_column(ForeignKey("period_collections.id"))
+    attendant_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    attendant_email: Mapped[str] = mapped_column(String(80))
+    attendant_phone_number: Mapped[str] = mapped_column(String(12))
     period_collection: Mapped["PeriodCollection"] = relationship(back_populates="period_assignments")
-    user: Mapped["User"] = relationship(back_populates="period_assignments")

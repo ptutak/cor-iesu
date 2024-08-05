@@ -18,3 +18,12 @@ check-hooks:
 	@echo "Checking pre-commit hooks..."
 	@pre-commit run --all-files
 	@echo "Done."
+
+.PHONY: init-migrations
+init-migrations:
+	@flask --app 'cor_iesu.app:create_app("./config/dev-config.ini")' db init
+
+.PHONY: migrations
+migrations:
+	@flask --app 'cor_iesu.app:create_app("./config/dev-config.ini")' db migrate -m "Migration at $(date)"
+	@flask --app 'cor_iesu.app:create_app("./config/dev-config.ini")' db upgrade
