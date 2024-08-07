@@ -1,8 +1,8 @@
-from flask import Blueprint, redirect, render_template, request, url_for, g
+from flask import Blueprint, g, redirect, render_template, request, url_for
 
 from cor_iesu.auth import login_required
 
-from .models import db, PeriodAssignment
+from .models import Collection, PeriodCollection, db
 
 api = Blueprint("views", __name__)
 
@@ -16,20 +16,16 @@ def user():
 @api.route("/assignments", methods=("GET", "POST"))
 def assignments():
     if request.method == "GET":
-        g.empty_assignments = (
-            db.session.query(PeriodAssignment)
-            .join
+        period_collections = (
+            db.session.query(PeriodCollection)
+            .join(PeriodCollection.collection)
+            .join(PeriodCollection.assignments, isouter=True)
+            .filter(Collection.enabled == True)
+            .all()
         )
-        # join with collecion, filter by enabled collections, then filter by assignments
-    #     g.hours = (
-    #     db.session.query(models.Hour)
-    #     .join(models.Hour.periods)
-    #     .join(models.Hour.assignments, isouter=True)
-    #     .filter(models.Period.collection == g.collection)
-    #     .order_by(models.Hour.weekday)
-    #     .order_by(models.Hour.hour)
-    #     .all()
-    # )
+        g.empty_assignments = [
+            period_collection for period_collection in period_collections if len(period_collection.assignments) < 2
+        ]
         return render_template("assignments.html")
 
     return redirect(url_for("views.assignments"))

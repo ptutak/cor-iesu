@@ -1,6 +1,6 @@
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey, String, Boolean
+from sqlalchemy import Boolean, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -62,9 +62,9 @@ class PeriodCollection(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     id_period: Mapped[int] = mapped_column(ForeignKey("periods.id"))
     id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))
-    collection: Mapped["Collection"] = relationship(back_populates="periods")
-    period: Mapped["Period"] = relationship()
-    assignment: Mapped["PeriodAssignment"] = relationship(back_populates="period_collection")
+    collection: Mapped["Collection"] = relationship(back_populates="periods", uselist=False)
+    period: Mapped["Period"] = relationship(uselist=False)
+    assignments: Mapped[list["PeriodAssignment"]] = relationship(back_populates="period_collection")
 
 
 class CollectionConfig(db.Model):
@@ -84,4 +84,4 @@ class PeriodAssignment(db.Model):
     attendant_name: Mapped[str] = mapped_column(String(100), nullable=False)
     attendant_email: Mapped[str] = mapped_column(String(80))
     attendant_phone_number: Mapped[str] = mapped_column(String(15))
-    period_collection: Mapped["PeriodCollection"] = relationship(back_populates="assignment")
+    period_collection: Mapped["PeriodCollection"] = relationship(back_populates="assignments", uselist=False)
