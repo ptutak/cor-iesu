@@ -58,7 +58,7 @@ class Collection(db.Model):
 
 class PeriodCollection(db.Model):
     __tablename__ = "period_collections"
-    __table_args__ =  (UniqueConstraint("id_period", "id_collection", name="period_collection_unique_constraint"),)
+    __table_args__ = (UniqueConstraint("id_period", "id_collection", name="period_collection_unique_constraint"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     id_period: Mapped[int] = mapped_column(ForeignKey("periods.id"))

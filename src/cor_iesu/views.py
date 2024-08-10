@@ -1,10 +1,19 @@
-from sqlalchemy import select
-from flask import Blueprint, g, redirect, render_template, request, url_for, abort
 from collections import namedtuple
+
+from flask import Blueprint, abort, g, redirect, render_template, request, url_for
+from sqlalchemy import select
+
 from cor_iesu.auth import login_required
 
 from .const import DatabaseKeys, DefaultValues
-from .models import Collection, CollectionConfig, PeriodAssignment, PeriodCollection, Period, db
+from .models import (
+    Collection,
+    CollectionConfig,
+    Period,
+    PeriodAssignment,
+    PeriodCollection,
+    db,
+)
 
 api = Blueprint("views", __name__)
 
@@ -17,26 +26,22 @@ def user():
 
 @api.route("/assignments", methods=("GET", "POST"))
 def assignments():
-    collections_configs = (
-        db.session.execute(
-            select(CollectionConfig)
-            .join(Collection)
-            .where(Collection.enabled)
-            .where(CollectionConfig.name == DatabaseKeys.ASSIGNMENT_LIMIT)
-        ).all()
-    )
+    collections_configs = db.session.execute(
+        select(CollectionConfig)
+        .join(Collection)
+        .where(Collection.enabled)
+        .where(CollectionConfig.name == DatabaseKeys.ASSIGNMENT_LIMIT)
+    ).all()
     limit_per_collection = {config.collection.id: int(config.value) for config in collections_configs}
 
     if request.method == "GET":
-        period_collections = (
-            db.session.execute(
-                select(PeriodCollection, Collection, Period, PeriodAssignment)
-                .join(PeriodCollection.collection)
-                .join(PeriodCollection.period)
-                .join(PeriodCollection.assignments, isouter=True)
-                .where(Collection.enabled)
-            ).all()
-        )
+        period_collections = db.session.execute(
+            select(PeriodCollection, Collection, Period, PeriodAssignment)
+            .join(PeriodCollection.collection)
+            .join(PeriodCollection.period)
+            .join(PeriodCollection.assignments, isouter=True)
+            .where(Collection.enabled)
+        ).all()
 
         free_assignment = namedtuple("free_assignment", ["collection_id", "period_collection_id", "period_name"])
 
@@ -54,9 +59,7 @@ def assignments():
             )
         ]
 
-        g.available_collections = (
-            db.session.scalars(select(Collection).where(Collection.enabled)).all()
-        )
+        g.available_collections = db.session.scalars(select(Collection).where(Collection.enabled)).all()
 
         return render_template("assignments.html.jinja2")
 
@@ -81,7 +84,9 @@ def assignments():
             phone_number = form["phone-number"]
 
         period_collections = db.session.execute(
-            select(PeriodCollection, PeriodAssignment).join(PeriodCollection.assignments, isouter=True).where(PeriodCollection.id == period_collection_id)
+            select(PeriodCollection, PeriodAssignment)
+            .join(PeriodCollection.assignments, isouter=True)
+            .where(PeriodCollection.id == period_collection_id)
         ).all()
 
         if len(period_collections) < limit_per_collection.get(
