@@ -27,17 +27,18 @@ def user():
 @api.route("/assignments", methods=("GET", "POST"))
 def assignments():
     collections_configs = db.session.execute(
-        select(CollectionConfig)
-        .join(Collection)
+        select(CollectionConfig, Collection)
+        .join(CollectionConfig.collection)
         .where(Collection.enabled)
         .where(CollectionConfig.name == DatabaseKeys.ASSIGNMENT_LIMIT)
     ).all()
-    limit_per_collection = {config.collection.id: int(config.value) for config in collections_configs}
-
+    limit_per_collection = {config.Collection.id: int(config.CollectionConfig.value) for config in collections_configs}
+    print(limit_per_collection)
     if request.method == "GET":
         period_collections = db.session.execute(
             select(PeriodCollection, Collection, Period, PeriodAssignment)
             .join(PeriodCollection.collection)
+
             .join(PeriodCollection.period)
             .join(PeriodCollection.assignments, isouter=True)
             .where(Collection.enabled)
@@ -59,6 +60,8 @@ def assignments():
             )
         ]
 
+        print(g.free_assignments)
+
         g.available_collections = db.session.scalars(select(Collection).where(Collection.enabled)).all()
 
         return render_template("assignments.html.jinja2")
@@ -71,33 +74,33 @@ def assignments():
     if "email" not in form and "phone-number" not in form:
         return abort(400, "You have to provide one of those form fields: 'email', 'phone-number'")
 
-    with db.session.begin():
-        period_collection_id = int(form["period-select"])
-        collection_id = int(form["collection-select"])
-        first_name = form["first-name"]
-        last_name = form["last-name"]
-        email = None
-        phone_number = None
-        if "email" in form:
-            email = form["email"]
-        else:
-            phone_number = form["phone-number"]
+    period_collection_id = int(form["period-select"])
+    collection_id = int(form["collection-select"])
+    first_name = form["first-name"]
+    last_name = form["last-name"]
+    email = None
+    phone_number = None
+    if "email" in form:
+        email = form["email"]
+    if "phone-number" in form:
+        phone_number = form["phone-number"]
 
-        period_collections = db.session.execute(
-            select(PeriodCollection, PeriodAssignment)
-            .join(PeriodCollection.assignments, isouter=True)
-            .where(PeriodCollection.id == period_collection_id)
-        ).all()
+    period_collections = db.session.execute(
+        select(PeriodCollection, PeriodAssignment)
+        .join(PeriodCollection.assignments, isouter=True)
+        .where(PeriodCollection.id == period_collection_id)
+    ).all()
 
-        if len(period_collections) < limit_per_collection.get(
-            collection_id,
-            g.config.get(DatabaseKeys.ASSIGNMENT_LIMIT, DefaultValues.ASSIGNMENT_LIMIT),
-        ):
-            new_assignment = PeriodAssignment()
-            new_assignment.id_period_collection = period_collection_id
-            new_assignment.attendant_email = email
-            new_assignment.attendant_phone_number = phone_number
-            new_assignment.attendant_name = f"{first_name} {last_name}"
-            db.session.add(new_assignment)
+    if len(period_collections) < limit_per_collection.get(
+        collection_id,
+        g.config.get(DatabaseKeys.ASSIGNMENT_LIMIT, DefaultValues.ASSIGNMENT_LIMIT),
+    ):
+        new_assignment = PeriodAssignment()
+        new_assignment.id_period_collection = period_collection_id
+        new_assignment.attendant_email = email
+        new_assignment.attendant_phone_number = phone_number
+        new_assignment.attendant_name = f"{first_name} {last_name}"
+        db.session.add(new_assignment)
+    db.session.commit()
 
     return redirect(url_for("views.assignments"))

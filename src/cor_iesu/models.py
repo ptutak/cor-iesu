@@ -73,7 +73,7 @@ class CollectionConfig(db.Model):
     __table_args__ = (UniqueConstraint("id_collection", "name", name="collection_config_unique_constraint"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))
+    id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     value: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(600), nullable=False)
