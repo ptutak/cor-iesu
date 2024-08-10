@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html.jinja2' %}
 {% block header %}
 <h4>Zapisy</h4>
 {% endblock %}
@@ -16,7 +16,7 @@
                     <div class="form-group">
                         <label for="collection-select">Wybierz kolekcję</label>
                         <select class="form-control" id="collection-select" name="collection-select">
-                            {% for collection in g.collections %}
+                            {% for collection in g.available_collections %}
                             <option value="{{ collection.id }}">
                                 {{ collection.name }}
                             </option>
@@ -56,9 +56,13 @@ $(document).ready(function() {
     $("#collection-select").change(function() {
         var val = $(this).val();
         {% for collection in g.available_collections %}
-        if (val == "{{ collection.name }}") {
+        if (val == "{{ collection.id }}") {
             $("#period-select").html(
-                "{%- for period in g.empty_periods -%}{%- if period.id_collection == collection.id -%}<option value={{period.id}}>{{period.name}}</option>{%- endif -%}{%- endfor -%}"
+                "{%- for period in g.free_assignments -%}
+                {%- if period.collection_id == collection.id -%}
+                <option value={{period.period_id}}>{{period.period_name}}</option>
+                {%- endif -%}
+                {%- endfor -%}"
             )
         }
         {% endfor %}

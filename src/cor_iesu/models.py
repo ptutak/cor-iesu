@@ -53,7 +53,7 @@ class Collection(db.Model):
     description: Mapped[str] = mapped_column(String(600), nullable=False)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     configs: Mapped[list["CollectionConfig"]] = relationship(back_populates="collection")
-    periods: Mapped[list["PeriodCollection"]] = relationship(back_populates="period")
+    periods: Mapped[list["PeriodCollection"]] = relationship(back_populates="collection")
 
 
 class PeriodCollection(db.Model):
@@ -69,7 +69,7 @@ class PeriodCollection(db.Model):
 
 class CollectionConfig(db.Model):
     __tablename__ = "collection_configs"
-    __table_args__ = UniqueConstraint("id_collection", "name")
+    __table_args__ = (UniqueConstraint("id_collection", "name", name="collection_config_unique_constraint"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))

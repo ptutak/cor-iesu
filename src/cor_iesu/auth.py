@@ -20,7 +20,7 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "GET":
-        return render_template("register.html")
+        return render_template("register.html.jinja2")
 
     username = request.form["username"]
     password = request.form["password"]
@@ -65,7 +65,7 @@ def register():
 @bp.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html.jinja2")
     username = request.form["username"]
     password = request.form["password"]
     error: str | None = None
