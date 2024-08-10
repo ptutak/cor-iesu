@@ -78,7 +78,7 @@ def login():
         error = "Zle haslo"
 
     if error is not None:
-        flash(error)
+        flash(error, 'error')
 
     session.clear()
     session["user-id"] = user.id

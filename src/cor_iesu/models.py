@@ -24,7 +24,7 @@ class Admin(db.Model):
     __tablename__ = "admins"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    id_user: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    id_user: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     user: Mapped["User"] = relationship(back_populates="admin")
 
 
@@ -58,6 +58,7 @@ class Collection(db.Model):
 
 class PeriodCollection(db.Model):
     __tablename__ = "period_collections"
+    __table_args__ =  (UniqueConstraint("id_period", "id_collection", name="period_collection_unique_constraint"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     id_period: Mapped[int] = mapped_column(ForeignKey("periods.id"))
@@ -85,6 +86,6 @@ class PeriodAssignment(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     id_period_collection: Mapped[int] = mapped_column(ForeignKey("period_collections.id"))
     attendant_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    attendant_email: Mapped[str] = mapped_column(String(80))
-    attendant_phone_number: Mapped[str] = mapped_column(String(15))
+    attendant_email: Mapped[str | None] = mapped_column(String(80))
+    attendant_phone_number: Mapped[str | None] = mapped_column(String(15))
     period_collection: Mapped["PeriodCollection"] = relationship(back_populates="assignments", uselist=False)
