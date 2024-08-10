@@ -12,7 +12,7 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .models import User, db
+from .models import Config, User, db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -107,7 +107,9 @@ def load_logged_in_user():
 
 @bp.before_app_request
 def load_collection_and_config():
-    pass
+    rows = list(db.session.query(Config).all())
+    g.config = {row.name: row.value for row in rows}
+    g.config_description = {row.name: row.description for row in rows}
 
 
 def login_required(view):

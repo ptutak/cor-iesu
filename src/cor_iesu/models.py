@@ -1,6 +1,6 @@
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Boolean, ForeignKey, String
+from sqlalchemy import Boolean, ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -52,7 +52,7 @@ class Collection(db.Model):
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     description: Mapped[str] = mapped_column(String(600), nullable=False)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    config: Mapped["CollectionConfig"] = relationship(back_populates="collection", uselist=False)
+    configs: Mapped[list["CollectionConfig"]] = relationship(back_populates="collection")
     periods: Mapped[list["PeriodCollection"]] = relationship(back_populates="period")
 
 
@@ -69,11 +69,14 @@ class PeriodCollection(db.Model):
 
 class CollectionConfig(db.Model):
     __tablename__ = "collection_configs"
+    __table_args__ = UniqueConstraint("id_collection", "name")
 
     id: Mapped[int] = mapped_column(primary_key=True)
     id_collection: Mapped[int] = mapped_column(ForeignKey("collections.id"))
-    collection: Mapped["Collection"] = relationship(back_populates="collection_configs")
-    config: Mapped["Config"] = relationship(back_populates="collections")
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    value: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(String(600), nullable=False)
+    collection: Mapped["Collection"] = relationship(back_populates="configs", uselist=False)
 
 
 class PeriodAssignment(db.Model):
